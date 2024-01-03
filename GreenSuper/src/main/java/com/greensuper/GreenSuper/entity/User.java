@@ -1,10 +1,15 @@
 package com.greensuper.GreenSuper.entity;
 
 
-import com.greensuper.GreenSuper.enums.UserRole;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
+import java.util.Set;
+
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Data
 @Table(name = "users")
@@ -14,14 +19,17 @@ public class User {
     private Long id;
     private String firstName;
     private String lastName;
+    @Column(nullable = false)
     private String password;
+
+    @Column(nullable = false,unique = true)
     private String email;
 
-    private UserRole role;
-
-    @Lob
-    @Column(columnDefinition = "longblob")
-    private byte[] img;
-
+    @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @JoinTable(name = "users_roles",
+            joinColumns = @JoinColumn(name = "user_id",referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id",referencedColumnName = "id")
+    )
+    private Set<Role> roles;
 
 }

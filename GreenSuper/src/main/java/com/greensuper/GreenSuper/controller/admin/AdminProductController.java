@@ -6,6 +6,7 @@ import com.greensuper.GreenSuper.services.admin.adminproduct.AdminProductService
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -20,7 +21,8 @@ public class AdminProductController {
     private final AdminProductService adminProductService;
 
 
-
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping("/product")
     public ResponseEntity<ProductDto> addProduct(@ModelAttribute ProductDto productDto) throws IOException {
         ProductDto productDto1 = adminProductService.addProduct(productDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(productDto1);

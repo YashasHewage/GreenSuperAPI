@@ -1,10 +1,11 @@
 package com.greensuper.GreenSuper.services.auth;
 
-import com.greensuper.GreenSuper.dto.SingupRequest;
-import com.greensuper.GreenSuper.dto.UserDto;
+
+import com.greensuper.GreenSuper.dto.LoginDto;
+import com.greensuper.GreenSuper.dto.RegisterDto;
 
 public interface AuthService {
-    UserDto createUser(SingupRequest signupRequest);
+    String register (RegisterDto registerDto);
 
-    Boolean hasUserWithEmail(String email);
+    String login(LoginDto loginDto);
 }

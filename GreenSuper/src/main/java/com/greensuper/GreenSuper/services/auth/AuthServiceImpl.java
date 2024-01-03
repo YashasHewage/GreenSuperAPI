@@ -1,58 +1,72 @@
 package com.greensuper.GreenSuper.services.auth;
 
-import com.greensuper.GreenSuper.dto.SingupRequest;
-import com.greensuper.GreenSuper.dto.UserDto;
-import com.greensuper.GreenSuper.entity.Order;
+
+import com.greensuper.GreenSuper.dto.LoginDto;
+import com.greensuper.GreenSuper.dto.RegisterDto;
+import com.greensuper.GreenSuper.entity.Role;
 import com.greensuper.GreenSuper.entity.User;
-import com.greensuper.GreenSuper.enums.OrderStatus;
-import com.greensuper.GreenSuper.enums.UserRole;
-import com.greensuper.GreenSuper.repository.OrderRepository;
+import com.greensuper.GreenSuper.exception.GreenSuperMarketApiException;
+import com.greensuper.GreenSuper.repository.RoleRepository;
 import com.greensuper.GreenSuper.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.jaxb.SpringDataJaxb;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Service
+@AllArgsConstructor
 public class AuthServiceImpl implements AuthService{
 
-    @Autowired
+
     private UserRepository userRepository;
 
-    @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private RoleRepository roleRepository;
 
-    @Autowired
-    private OrderRepository orderRepository;
+    private PasswordEncoder passwordEncoder;
 
-    public UserDto createUser(SingupRequest signupRequest){
+    private AuthenticationManager authenticationManager;
+    @Override
+    public String register(RegisterDto registerDto) {
+
+        //check email is already exists in database
+        if (userRepository.existsByEmail(registerDto.getEmail())){
+            throw new GreenSuperMarketApiException(HttpStatus.BAD_REQUEST,"Username already exists !");
+        }
+
         User user = new User();
+        user.setFirstName(registerDto.getFirstName());
+        user.setLastName(registerDto.getLastName());
+        user.setEmail(registerDto.getEmail());
+        user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
 
-        user.setEmail(signupRequest.getEmail());
-        user.setFirstName(signupRequest.getFirstName());
-        user.setLastName(signupRequest.getLastName());
-        user.setPassword(new BCryptPasswordEncoder().encode(signupRequest.getPassword()));
-        user.setRole(UserRole.CUSTOMER);
-        User createdUser = userRepository.save(user);
+        Set<com.greensuper.GreenSuper.entity.Role> roles = new HashSet<>();
 
-        Order order = new Order();
-        order.setAmount(0L);
-        order.setTotalAmount(0L);
-        order.setDiscount(0L);
-        order.setUser(createdUser);
-        order.setOrderStatus(OrderStatus.Pending);
-        orderRepository.save(order);
+        Role userRole = roleRepository.findByName("ROLE_USER");
+        roles.add(userRole);
+        user.setRoles(roles);
 
+        userRepository.save(user);
 
-        UserDto userDto = new UserDto();
-        userDto.setEmail(createdUser.getEmail());
-
-        return userDto;
+        return "User Registered Successfully !.";
     }
 
-    public  Boolean hasUserWithEmail(String email){
-        return userRepository.findFirstByEmail(email).isPresent();
-    }
+    @Override
+    public String login(LoginDto loginDto) {
+         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                 loginDto.getEmail(),
+                 loginDto.getPassword()
+         ));
 
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        return "User logged-in successfully!.";
+    }
 }
 

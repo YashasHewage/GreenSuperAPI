@@ -26,12 +26,12 @@ public class AdminProductServiceImpl implements  AdminProductService{
         product.setName(product.getName());
         product.setDescription(product.getDescription());
         product.setPrice(product.getPrice());
-        product.setImg(productDto.getImg().getBytes());
+       // product.setImg(productDto.getImg().getBytes());
 
 
-        Category category = categoryRepository.findById(productDto.getCategoryId()).orElseThrow();
+       // Category category = categoryRepository.findById(productDto.getCategoryId()).orElseThrow();
 
-        product.setCategory(category);
+      //  product.setCategory(category);
         return productRepository.save(product).getDto();
     }
 
@@ -65,21 +65,21 @@ public class AdminProductServiceImpl implements  AdminProductService{
 
     public ProductDto updateProduct(Long productId, ProductDto productDto) throws IOException {
         Optional<Product> optionalProduct = productRepository.findById(productId);
-        Optional<Category> optionalCategory = categoryRepository.findById(productDto.getCategoryId());
-        if (optionalProduct.isPresent() && optionalCategory.isPresent()){
+        //Optional<Category> optionalCategory = categoryRepository.findById(productDto.getCategoryId());
+        //if (optionalProduct.isPresent() && optionalCategory.isPresent()){
             Product product = optionalProduct.get();
 
             product.setName(productDto.getName());
             product.setPrice(productDto.getPrice());
             product.setDescription(productDto.getDescription());
-            product.setCategory(optionalCategory.get());
-            if (productDto.getImg() != null){
-                product.setImg(productDto.getImg().getBytes());
-            }
+           // product.setCategory(optionalCategory.get());
+           // if (productDto.getImg() != null){
+          //      product.setImg(productDto.getImg().getBytes());
+          //  }
             return productRepository.save(product).getDto();
 
-        }else {
-            return  null;
+       // }else {
+       //     return  null;
         }
     }
 
@@ -87,4 +87,4 @@ public class AdminProductServiceImpl implements  AdminProductService{
 
 
 
-}
+//}
