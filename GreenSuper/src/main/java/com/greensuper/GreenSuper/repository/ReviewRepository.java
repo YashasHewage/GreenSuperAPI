@@ -1,4 +1,4 @@
-package com.greensuper.GreenSuper.repository;
+/*package com.greensuper.GreenSuper.repository;
 
 
 import com.greensuper.GreenSuper.entity.Review;
@@ -12,4 +12,4 @@ public interface ReviewRepository extends JpaRepository <Review, Long> {
 
     List <Review> findAllByProductId(Long productsId);
 
-}
+}*/

@@ -1,4 +1,5 @@
-package com.greensuper.GreenSuper.controller.customer;
+/*
+package com.greensuper.GreenSuper.controller;
 
 
 import com.greensuper.GreenSuper.dto.ProductDetailDto;
@@ -42,3 +43,4 @@ public class CustomerProductController {
 
 
 }
+*/

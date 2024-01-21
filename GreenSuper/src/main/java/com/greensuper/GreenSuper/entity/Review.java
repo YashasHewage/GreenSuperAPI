@@ -1,3 +1,4 @@
+/*
 package com.greensuper.GreenSuper.entity;
 
 
@@ -49,3 +50,4 @@ public class Review {
         return reviewDto;
     }
 }
+*/
